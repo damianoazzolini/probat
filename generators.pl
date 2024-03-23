@@ -2,7 +2,9 @@ type(int).
 type(float).
 generator(int).
 generator(pos_int).
+generator(pos_int_no_zero).
 generator(neg_int).
+generator(neg_int_no_zero).
 generator(float).
 generator(pos_float).
 generator(neg_float).
@@ -46,9 +48,15 @@ random_element(int,V):-
 random_element(pos_int,V):-
     setting(maxVal,MaxV),
     random_element(int,0,MaxV,V).
+random_element(pos_int_no_zero,V):-
+    setting(maxVal,MaxV),
+    random_element(int,1,MaxV,V).
 random_element(neg_int,V):-
     setting(minVal,MinV),
     random_element(int,MinV,0,V).
+random_element(neg_int_no_zero,V):-
+    setting(minVal,MinV),
+    random_element(int,MinV,-1,V).
 random_element(int,Lower,Upper,V):-
     random_between(Lower, Upper, V).
 

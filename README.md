@@ -1,11 +1,13 @@
 # Types
 <!-- https://propertesting.com/book_stateless_properties.html -->
 - [x] int
-- [x] pos_int
-- [x] neg_int
+- [x] pos_int (int >= 0)
+- [x] pos_int_no_zero (int > 0)
+- [x] neg_int (int =< 0)
+- [x] neg_int_no_zero (int < 0)
 - [x] float
-- [x] pos_float
-- [x] neg_float
+- [x] pos_float (float >= 0)
+- [x] neg_float (float =< 0)
 - [x] number (int or float)
 - [] rational
 - [] atom
