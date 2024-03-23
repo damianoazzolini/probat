@@ -1,0 +1,23 @@
+# Types
+<!-- https://propertesting.com/book_stateless_properties.html -->
+- [x] int
+- [x] pos_int
+- [x] neg_int
+- [x] float
+- [x] pos_float
+- [x] neg_float
+- [x] number (int or float)
+- [] rational
+- [] atom
+- [] blob ?
+- [] string
+- [] atomic
+- [] compound?
+- [] callable?
+- [] ground?
+- [x] list -> list of arbitrary length of arbitrary types
+- [x] list(2) -> list of length 2 of arbitrary types
+- [x] list(*,[int]) -> list of arbitrary length of int
+- [x] list(3,[int,float]) -> list of length 3 of only int and float
+- [x] list([int,float]) -> list of length 2 where the first element is an int and the second a float
+- [x] list([list,float]) -> list of length 2 where the first element is an arbitrary list and the second a float
