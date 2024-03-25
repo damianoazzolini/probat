@@ -1,3 +1,6 @@
+:- discontiguous random_element/2.
+:- discontiguous random_element/4.
+
 type(int).
 type(float).
 generator(int).
@@ -10,30 +13,28 @@ generator(pos_float).
 generator(neg_float).
 generator(number).
 generator(list).
+generator(nonempty_list). % TODO?
 
 % valid_generator(Generator): check whether Generator is a valid generator
 valid_generator(Generator):-
     generator(Generator), !.
 valid_generator(int(L,U)):-
-    integer(L),
-    integer(U),
-    U > L.
+    maplist(integer,[L,U]),
+    U > L, !.
 valid_generator(float(L,U)):-
-    float(L),
-    float(U),
-    U > L.
+    maplist(float,[L,U]),
+    U > L, !.
 valid_generator(number(L,U)):-
-    number(L),
-    number(U),
-    U > L.
+    maplist(number,[L,U]),
+    U > L, !.
 valid_generator(list(A)):-
-    integer(A).
+    integer(A), !.
 valid_generator(list(L)):- 
     is_list(L),
-    maplist(valid_generator,L).
+    maplist(valid_generator,L), !.
 valid_generator(list(N,L)):-
     (integer(N) ; N = *),
-    maplist(valid_generator,L).
+    maplist(valid_generator,L), !.
 
 
 % for integers

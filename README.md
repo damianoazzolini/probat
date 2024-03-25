@@ -23,3 +23,4 @@
 - [x] list(3,[int,float]) -> list of length 3 of only int and float
 - [x] list([int,float]) -> list of length 2 where the first element is an int and the second a float
 - [x] list([list,float]) -> list of length 2 where the first element is an arbitrary list and the second a float
+- [] nonempty_list -> non empty list, with all the possibilities above
