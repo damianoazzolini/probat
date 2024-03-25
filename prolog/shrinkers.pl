@@ -1,9 +1,3 @@
-% shrink integers
-% try: changing the sign 
-% try: 0
-% try: bisection
-% shrink(Type,Value,Shrank).
-
 % to keep together shrinks for the same type
 :- discontiguous shrink/3.
 
@@ -29,7 +23,6 @@ get_length(L,S):-
     	length(L,S)
     ).
 
-
 % my_compare/3: compares the length of two lists.
 % in the > case there is >= to keep duplicates.
 % Leaves choice points open, due to the = case.
@@ -42,28 +35,6 @@ my_compare(>,N0,N1):-
     get_length(N1,NA1),
     NA0 >= NA1. % to keep duplicates
 my_compare(=,_N0,_N1).
-
-% % cartesian_product_2/3: given a list of two lists as first
-% % arguments, generates two lists, one for the first value
-% % and one for the second value. Used to generate alternatives
-% % while shrinking.
-% % Example:
-% % cartesian_product_2([[1, 2, 3], [a, b,c]], R0, R1).
-% % R0 = [1, 1, 1, 2, 2, 2, 3, 3, 3],
-% % R1 = [c, b, a, c, b, a, c, b, a]
-% % TODO: fix this, flatten is not ok for lists
-% cartesian_product_2([A,B],Alternatives0,Alternatives1):-
-%     cartesian_product_2(A,B,[],[],CPL0,CPL1),
-%     flatten(CPL0,LF0),
-%     predsort(my_compare,LF0,Alternatives0), !,
-%     flatten(CPL1,LF1),
-%     predsort(my_compare,LF1,Alternatives1), !.
-% cartesian_product_2([],_,L0,L1,L0,L1).
-% cartesian_product_2([A|TA],LB,LT0,LT1,FL0,FL1):-
-%     length(LB,N),
-%     length(LA,N),
-%     maplist(=(A),LA),
-%     cartesian_product_2(TA,LB,[LA|LT0],[LB|LT1],FL0,FL1).
 
 % generate_shrinking_alternatives/3: generates possible shrinks
 % for the term of type specified in the first argument starting
@@ -159,17 +130,14 @@ shrink_bisect_list(MaxAttempts,List,right,Start,End,Shrank):-
     shrink_bisect_list(M1,List,left,Start,E1,Shrank).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TODO
 get_type(A,int):- integer(A).
 get_type(A,float):- float(A).
-get_type(A,float):- float(A).
-shrink(list(N,Types),List,Shrank):-
+shrink(list(N,_Types),List,Shrank):-
     % list of length N of types only Types
     integer(N),
     maplist(get_type,List,TypeIndex), % TODO: these must be in types
-    maplist(shrink,TypeIndex,List,Shrank). % TODO: finish this: the values must be aggregated
+    maplist(shrink,TypeIndex,List,Shrank).
 shrink(list(Types),List,Shrank):-
     % list of length len(Types) where each element is of type Types_i in Types
-    maplist(shrink,Types,List,Shrank). % TODO: finish this: the values must be aggregated
-
+    maplist(shrink,Types,List,Shrank).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -14,6 +14,8 @@ generator(neg_float).
 generator(number).
 generator(list).
 generator(nonempty_list). % TODO?
+generator(any).
+generator(var). % variable
 
 % valid_generator(Generator): check whether Generator is a valid generator
 valid_generator(Generator):-
@@ -33,9 +35,16 @@ valid_generator(list(L)):-
     is_list(L),
     maplist(valid_generator,L), !.
 valid_generator(list(N,L)):-
-    (integer(N) ; N = *),
+    (integer(N) ; N = any),
     maplist(valid_generator,L), !.
 
+% variable
+random_element(var,_).
+
+% any element: number or list
+random_element(any,V):-
+    random_member(T,[number,list]),
+    random_element(T,V).
 
 % for integers
 % random_element(int,V): V is a random integer between -2**31 and 2**31 
@@ -116,7 +125,7 @@ random_element(list(N), L):-
     maplist(pick_random_type, L).
 % list of fixed types LT of length N
 random_element(list(N,LT),L):-
-    ( N = * -> % any length
+    ( N = any -> % any length
         setting(maxLenList, MaxLen),
         random_between(0, MaxLen, Len) ;
         Len = N

@@ -4,28 +4,16 @@
 :- multifile random_element/2.
 :- multifile random_element/4.
 :- multifile generate_shrinking_alternatives/3.
-:- multifile cartesian_product_2/3.
+:- dynamic property/1.
+
 :- meta_predicate property(?).
 
-:- setting(trials, integer, 3, "Number of test").
+:- setting(trials, integer, 100, "Number of test").
 :- setting(depth, integer, 8, "Max shrink depth.").
 :- setting(maxLenList, integer, 32, "Max list length.").
 :- setting(verbosity, integer, 1, "Verbosity.").
 :- setting(minVal, integer, -2147483648, "Min val to generate."). % -2**31
 :- setting(maxVal, integer, 2147483648, "Max val to generate."). % 2**31
-
-% %% predefined properties
-% % property(always_gt(0,somma(int,int,*)). 
-% always_gt(Value,Predicate):-
-%     % check consistency
-%     ( number(Value) ->
-%         true ;
-%         format("Value of always_gt(~w,~w) must be a number, ~w found~n",[Value,Predicate,Value]);
-%         false
-%     ),
-%     % TODO,
-%     true.
-% %%
 
 % test_shrank(Predicate,LToTest,FailingInstance)
 % LToTest is a list of N lists each one with M elements, where N is
@@ -59,7 +47,6 @@ test_shrank(Predicate,LArgs,F0):-
         F0 = ToCall ;
         test_shrank(Predicate,Remaining,F0)
     ).
-
 
 test_loop(I,_,_,L,L):- I =< 0, !.
 test_loop(I,Predicate,Arguments,LF,FailuresList):-
@@ -96,7 +83,7 @@ run_test(Test,Result):-
     length(FailuresList,NFailures),
     FailureRatio is NFailures / Trials,
     sort(FailuresList,FS),
-    format("Run ~w tests, ~w failures (~w %)~n",[Trials,NFailures,FailureRatio]),
+    format("Run ~w attempts, ~w failures (~w %)~n",[Trials,NFailures,FailureRatio]),
     ( NFailures > 0 ->
         format("Failures list ~w~n--- FAILED ---~n",[FS]),
         Result = -1 ;
@@ -153,7 +140,7 @@ property_test(Arguments):-
 % exist. DoesExist = 1 if the predicate exists, 0 otherwise.
 check_existence(Predicate,DoesExist):-
     functor(Predicate, Name, Arity),
-    ( current_predicate(Name/Arity) ->
+    ( current_predicate(user:Name/Arity) ->
         DoesExist = 1 ;
         DoesExist = 0
     ),
@@ -171,6 +158,11 @@ property_test_:-
     % listing,
     consult("generators.pl"),
     consult("shrinkers.pl"),
+    catch(
+        user:property(_),
+        error(existence_error(_,_),_),
+        (writeln("Please specify at least one property to test"), false)
+    ), !,
     findall(Test,user:property(Test),LTests),
     % checks that the predicate exist
     maplist(check_existence,LTests,ExistOrNot),
