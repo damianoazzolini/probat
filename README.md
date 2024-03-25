@@ -3,7 +3,7 @@ Property based testing Prolog programs (currently only SWI Prolog is supported).
 
 Installation (SWI Prolog only, by now)
 ```
-pack_install('https://github.com/damianoazzolini/probat').
+pack_install('https://github.com/damianoazzolini/probat.git').
 ```
 
 ## What is it for?
@@ -60,6 +60,8 @@ Some examples of specifiers for lists:
 ## Example
 You have this program in a file called `a.pl`.
 ```Prolog
+:- use_module(library(probat)).
+
 % this is the predicate defining the property you want to check
 always_hold(A,B):-
     A > 0,
@@ -71,7 +73,7 @@ property(always_hold(int,int)).
 ```
 Load it into SWI 
 ```
-$ swipl prova.pl 
+$ swipl a.pl 
 ```
 and test the property with `property_test/0` (or `property_test/1` if you don't like the default values):
 ```

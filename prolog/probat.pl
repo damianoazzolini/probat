@@ -1,5 +1,8 @@
 :- module(probat, [property_test/0, property_test/1]).
 
+:- ["generators.pl"].
+:- ["shrinkers.pl"].
+
 :- multifile valid_generator/1.
 :- multifile random_element/2.
 :- multifile random_element/4.
@@ -155,9 +158,6 @@ write_predicates_not_found(Predicate,0):-
 write_predicates_not_found(_,1).
 
 property_test_:-
-    % listing,
-    consult("generators.pl"),
-    consult("shrinkers.pl"),
     catch(
         user:property(_),
         error(existence_error(_,_),_),
