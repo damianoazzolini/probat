@@ -17,6 +17,7 @@ The former can be used to run the tests with the default parameters which are:
 - `verbosity`: 1, (Verbosity)
 - `minVal`: -2147483648, (Min val to generate)
 - `maxVal`: 2147483648, (Max val to generate)
+
 If you want to change the default parameters, the predicate `property_test/1` accepts a list where each atom has as name the argument to set (among the specified in the above list) and as argument its value.
 For instance, with `property_test([trials(10)])` the number of trials is set to 10.
 
@@ -89,6 +90,8 @@ Failed 1 over 1 (1 %)
 .
 true.
 ```
+
+Further examples can be found into the `examples` folder.
 
 ## Related Tools
 This library is based on the [quickcheck](https://hackage.haskell.org/package/QuickCheck) haskell' library.
