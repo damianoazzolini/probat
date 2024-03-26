@@ -46,7 +46,7 @@ test_shrank(Predicate,LArgs,F0):-
         format("Testing ~w~n",[ToCall]) ;
         true
     ),
-    ( \+ToCall -> 
+    ( \+ catch(ToCall, _Error, false) -> 
         F0 = ToCall ;
         test_shrank(Predicate,Remaining,F0)
     ).
@@ -56,9 +56,9 @@ test_loop(I,Predicate,Arguments,LF,FailuresList):-
     I > 0,
     I1 is I - 1,
     % generate random inputs
-    maplist(random_element,Arguments,LRandomElements),
+    maplist(random_element,Arguments,LRandomElements), !,
     ToCall =.. [Predicate|LRandomElements],
-    ( ToCall -> 
+    ( catch(ToCall, _Error, false) ->
         test_loop(I1,Predicate,Arguments,LF,FailuresList) ;
         maplist(generate_shrinking_alternatives,Arguments,LRandomElements,PossibleShrinks),
         setting(verbosity,V),
@@ -75,7 +75,7 @@ test_loop(I,Predicate,Arguments,LF,FailuresList):-
 
 run_test(Test,Result):-
     setting(trials,Trials),
-    Test =.. [Predicate|Arguments], %
+    Test =.. [Predicate|Arguments],
     ( maplist(valid_generator,Arguments) -> 
         true ;
         format("Some generators for ~w are not valid~n",[Test]),

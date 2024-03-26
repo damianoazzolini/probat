@@ -24,7 +24,7 @@ For instance, with `property_test([trials(10)])` the number of trials is set to 
 Futhermore, the library tries to perform shrinking, i.e., when an example that violates the property is found, the library tries to found a smaller one, which is possibly more helpful for the programmer.
 
 ### How to Define a Test?
-Add to your source code a set of facts `property/1` where the argument is the predicate that describe the property that must be checked and as its argument one of the following types ([x] means implemented, [] not yet implemented):
+Add to your source code a set of facts `property/1` where the argument is the predicate that describe the property that must be checked and as its argument one of the following types (`[x]` means implemented, `[ ]` not yet implemented):
 - [x] `int`
 - [x] `pos_int` (int >= 0)
 - [x] `pos_int_no_zero` (int > 0)
@@ -34,6 +34,7 @@ Add to your source code a set of facts `property/1` where the argument is the pr
 - [x] `pos_float` (float >= 0)
 - [x] `neg_float` (float =< 0)
 - [x] `number` (int or float)
+- [x] all the above with two arguments, representing the lower and the upper bound (for example, `int(2,3)`)
 - [x] `var`: variable
 - [x] `any`: anything
 - [x] `list`: list of arbitrary length of arbitrary types
@@ -41,15 +42,15 @@ Add to your source code a set of facts `property/1` where the argument is the pr
 - [x] `list(any,[type])` -> list of arbitrary length of type type
 - [x] `list(N,[type0,type1,...])`: list of length `N` of only types `type0`, `type1`, ...
 - [x] `list([type0,type1,...])`: list of length of the input list where the first element is of `type0`, the second of `type1`, and so on
-- [] atom
-- [] nonempty_list?
-- [] rational?
-- [] blob?
-- [] string
-- [] atomic?
-- [] compound?
-- [] callable?
-- [] ground?
+- [ ] atom
+- [ ] nonempty_list?
+- [ ] rational?
+- [ ] blob?
+- [ ] string
+- [ ] atomic?
+- [ ] compound?
+- [ ] callable?
+- [ ] ground?
 
 Some examples of specifiers for lists:
 - `list(2)`: list of length 2 of arbitrary types
@@ -92,6 +93,9 @@ true.
 ```
 
 Further examples can be found into the `examples` folder.
+
+## Caveat
+Currently, if your predicate use assert and does not retract values upon failures, these are will be kept in the database, so possible subsequent calls that depend on these values may be not fully valid. 
 
 ## Related Tools
 This library is based on the [quickcheck](https://hackage.haskell.org/package/QuickCheck) haskell' library.
