@@ -1,5 +1,4 @@
 :- discontiguous random_element/2.
-:- discontiguous random_element/4.
 
 type(int).
 type(float).
@@ -13,9 +12,11 @@ generator(pos_float).
 generator(neg_float).
 generator(number).
 generator(list).
-generator(nonempty_list). % TODO?
+% generator(nonempty_list). % TODO?
 generator(any).
 generator(var). % variable
+
+provided_composite_generators([int(_,_), float(_,_), number(_,_), list(_), list(_,_)]).
 
 % valid_generator(Generator): check whether Generator is a valid generator
 valid_generator(Generator):-
@@ -37,6 +38,13 @@ valid_generator(list(L)):-
 valid_generator(list(N,L)):-
     (integer(N) ; N = any),
     maplist(valid_generator,L), !.
+% user defined generator
+valid_generator(G):-
+    ground(G),
+    G =.. [Name|Args],
+    append([_],Args,ArgsTrue),
+    G1 =.. [Name|ArgsTrue],
+    clause(G1,_), !.
 
 % variable
 random_element(var,_).
@@ -50,24 +58,24 @@ random_element(any,V):-
 % random_element(int,V): V is a random integer between -2**31 and 2**31 
 % random_element(pos_int,V): V is a random integer between 0 and 2**31 
 % random_element(neg_int,V): V is a random integer between -2**31 and 0 
-% random_element(int,L,U,V): V is a random integer between L and U 
+% random_element(int(L,U),V): V is a random integer between L and U 
 random_element(int,V):-
     setting(minVal,MinV),
     setting(maxVal,MaxV),
-    random_element(int,MinV,MaxV,V).
+    random_element(int(MinV,MaxV),V).
 random_element(pos_int,V):-
     setting(maxVal,MaxV),
-    random_element(int,0,MaxV,V).
+    random_element(int(0,MaxV),V).
 random_element(pos_int_no_zero,V):-
     setting(maxVal,MaxV),
-    random_element(int,1,MaxV,V).
+    random_element(int(1,MaxV),V).
 random_element(neg_int,V):-
     setting(minVal,MinV),
-    random_element(int,MinV,0,V).
+    random_element(int(MinV,0),V).
 random_element(neg_int_no_zero,V):-
     setting(minVal,MinV),
-    random_element(int,MinV,-1,V).
-random_element(int,Lower,Upper,V):-
+    random_element(int(MinV,-1),V).
+random_element(int(Lower,Upper),V):-
     random_between(Lower, Upper, V).
 
 % for floats
@@ -78,24 +86,29 @@ random_element(int,Lower,Upper,V):-
 random_element(float,V):-
     setting(minVal,MinV),
     setting(maxVal,MaxV),
-    random_element(float,MinV,MaxV,V).
+    random_element(float(MinV,MaxV),V).
 random_element(pos_float,V):-
     setting(maxVal,MaxV),
-    random_element(float,0,MaxV,V).
+    random_element(float(0,MaxV),V).
 random_element(neg_float,V):-
     setting(minVal,MinV),
-    random_element(float,MinV,0,V).
-random_element(float,Lower,Upper,V):-
+    random_element(float(MinV,0),V).
+random_element(float(Lower,Upper),V):-
     random(R),
     V is R*(Upper - Lower) + Lower.
 
 % for number (int or float)
+% Check: when float, I allow integers as arguments, explicitly
+% not allowed by the initial float check. That is,
+% number(2,3) may call float(2,3) while a direct call to
+% float(2,3) raises an error in the generator checking phase.
 random_element(number,V):-
     random_member(T,[int,float]),
     random_element(T,V).
-random_element(number,L,U,V):-
+random_element(number(L,U),V):-
     random_member(T,[int,float]),
-    random_element(T,L,U,V).
+    RE =.. [T,L,U],
+    random_element(RE,V).
 
 % pick_random_type(V): V is a random type among all possible types
 % pick_random_type(Allowed,V): V is a random type among the allowed
@@ -138,3 +151,16 @@ random_element(list(LT),L):-
     length(LT,N), !,
     length(L,N),
     maplist(random_element, LT, L).
+
+% user defined random element
+random_element(G,El):-
+    \+ generator(G),
+    provided_composite_generators(CG),
+    \+ member(G,CG), !,
+    G =.. [Name|Args],
+    append([El],Args,ArgsTrue),
+    G1 =.. [Name|ArgsTrue],
+    catch(G1, _Error, (
+        format("Error in generating custom values from ~w~n",[G1]),
+        false
+    )), !.
