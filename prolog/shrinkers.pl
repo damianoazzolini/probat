@@ -36,13 +36,24 @@ my_compare(>,N0,N1):-
     NA0 >= NA1. % to keep duplicates
 my_compare(=,_N0,_N1).
 
+
+simplify_element(V,V1):-
+    is_list(V),
+    maplist(simplify_element,V,V1).
+simplify_element(V,V1):-
+    float(V), % converts 0.0 in 0
+    V1 is floor(V),
+    V1 is ceil(V).
+simplify_element(V,V).
+
 % generate_shrinking_alternatives/3: generates possible shrinks
 % for the term of type specified in the first argument starting
 % from the value specified in the second argument (Value) and
 % returns them in the list ShrankList.
 generate_shrinking_alternatives(Type,Value,ShrankList):-
     findall(S,shrink(Type,Value,S),LS),
-    predsort(my_compare,LS,ShrankList), !.
+    maplist(simplify_element,LS,LSimpl), !,
+    predsort(my_compare,LSimpl,ShrankList), !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % shrink(Type,Value,Shrank): Shrank is an attempt to shrink the value Value of type Type
