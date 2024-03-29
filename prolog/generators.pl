@@ -13,6 +13,7 @@ generator(neg_float).
 generator(number).
 generator(list).
 generator(atom).
+generator(string).
 % generator(nonempty_list). % TODO?
 generator(any).
 generator(var). % variable
@@ -165,6 +166,13 @@ random_element(atom(L,U),AT):-
     length(LAtom,Len),
     maplist(random_between(0x20, 0x7e),LAtom),
     atom_codes(AT,LAtom).
+random_element(string,String):-
+    random_element(atom,Atom),
+    atom_string(Atom,String).
+random_element(string(L,U),String):-
+    random_element(atom(L,U),Atom),
+    atom_string(Atom,String).
+    
 
 % user defined random element
 random_element(G,El):-

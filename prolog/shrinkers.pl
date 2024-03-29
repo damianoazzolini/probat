@@ -154,6 +154,7 @@ shrink(list(Types),List,Shrank):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: shrink string by wrapping shrink atom
 first_n_atom(Atom,N,OutAtom):-
     atom_codes(Atom,LAtom),
     length(L1,N),
@@ -162,9 +163,12 @@ first_n_atom(Atom,N,OutAtom):-
     atom_codes(OutAtom,L1).
 shrink(atom,Atom,S):-
     atom_codes(Atom,LAtom),
-    shrink(list,LAtom,SList),
-    SList \= [],
-    atom_codes(S,SList).
+    (length(LAtom,1) ->
+        S = Atom ; 
+        shrink(list,LAtom,SList),
+        SList \= [],
+        atom_codes(S,SList)
+    ).
 shrink(atom(L,U),Atom,S):-
     ( L = U -> 
         S = Atom ; 
