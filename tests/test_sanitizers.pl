@@ -21,6 +21,7 @@ test(basic_8):- valid_generator(neg_float).
 test(basic_9):- valid_generator(number).
 test(basic_10):- valid_generator(list).
 test(basic_11):- valid_generator(atom).
+test(basic_12):- valid_generator(string).
 :- end_tests(valid_generator).
 
 :- begin_tests(valid_composite_generators).
@@ -32,6 +33,7 @@ test(composite_4):- valid_generator(list(any,[int])).
 test(composite_5):- valid_generator(list(3,[int,float])).
 test(composite_6):- valid_generator(list([int,float])).
 test(composite_7):- valid_generator(atom(1,2)).
+test(composite_8):- valid_generator(string(1,2)).
 :- end_tests(valid_composite_generators).
 
 :- begin_tests(valid_composite_generators_fail).
@@ -45,5 +47,7 @@ test(composite_6):- \+ valid_generator(list(3,int)).
 test(composite_7):- \+ valid_generator(float(1,2)). % since 1 and 2 are not a float
 test(composite_8):- \+ valid_generator(atom(2,1)).
 test(composite_9):- \+ valid_generator(atom(1,-2)).
+test(composite_8):- \+ valid_generator(string(2,1)).
+test(composite_9):- \+ valid_generator(string(1,-2)).
 :- end_tests(valid_composite_generators_fail).
 

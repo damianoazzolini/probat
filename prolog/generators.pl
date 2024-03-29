@@ -18,7 +18,7 @@ generator(string).
 generator(any).
 generator(var). % variable
 
-provided_composite_generators([int(_,_), float(_,_), number(_,_), list(_), list(_,_), atom(_,_)]).
+provided_composite_generators([int(_,_), float(_,_), number(_,_), list(_), list(_,_), atom(_,_), string(_,_)]).
 
 % valid_generator(Generator): check whether Generator is a valid generator
 valid_generator(Generator):-
@@ -43,6 +43,9 @@ valid_generator(list(N,L)):-
 valid_generator(atom(L,U)):-
     integer(L), L >= 1,
     integer(U), U >= L, !.
+valid_generator(string(L,U)):-
+    integer(L), L >= 1,
+    integer(U), U >= L, !.
 % user defined generator
 valid_generator(G):-
     ground(G),
@@ -56,7 +59,7 @@ random_element(var,_).
 
 % any element: number or list
 random_element(any,V):-
-    random_member(T,[number,list,atom]),
+    random_member(T,[number,list,atom,string]),
     random_element(T,V).
 
 % for integers

@@ -154,7 +154,6 @@ shrink(list(Types),List,Shrank):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TODO: shrink string by wrapping shrink atom
 first_n_atom(Atom,N,OutAtom):-
     atom_codes(Atom,LAtom),
     length(L1,N),
@@ -188,4 +187,13 @@ shrink_atom_bisect(atom(L,U),Depth,Atom,S):-
     L1 is floor((L+U)/2),
     D1 is Depth - 1,
     shrink_atom_bisect(atom(L1,U),D1,Atom,S).
+% string: wrap atom and convert
+shrink(string,String,S):-
+    atom_string(Atom,String),
+    shrink(atom,Atom,SA),
+    atom_string(SA,S).
+shrink(string(L,U),String,S):-
+    atom_string(Atom,String),
+    shrink(atom(L,U),Atom,SA),
+    atom_string(SA,S).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

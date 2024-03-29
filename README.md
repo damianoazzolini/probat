@@ -44,14 +44,8 @@ Add to your source code a set of facts `property/1` where the argument is the pr
 - [x] `list([type0,type1,...])`: list of length of the input list where the first element is of `type0`, the second of `type1`, and so on
 - [X] `atom`
 - [X] `atom(L,U)`: atom of length between `L` and `U`.
-- [ ] nonempty_list?
-- [ ] rational?
-- [ ] blob?
-- [ ] string
-- [ ] atomic?
-- [ ] compound?
-- [ ] callable?
-- [ ] ground?
+- [X] `string`
+- [X] `string(L,U)`: string of length between `L` and `U`.
 
 Some examples of specifiers for lists:
 - `list(2)`: list of length 2 of arbitrary types
@@ -61,7 +55,7 @@ Some examples of specifiers for lists:
 - `list([list,float])`: list of length 2 where the first element is an arbitrary list and the second a float
 
 ## Example
-You have this program in a file called `a.pl`.
+Suppose you have this program in a file called `a.pl`.
 ```Prolog
 :- use_module(library(probat)).
 
@@ -81,14 +75,13 @@ $ swipl a.pl
 and test the property with `property_test/0` (or `property_test/1` if you don't like the default values):
 ```
 ?- property_test.
-Found 1 tests
-Executing test: always_hold(int,int)
-Run 100 attempts, 77 failures (0.77 %)
-Failures list [always_hold(-1,-1),always_hold(-1,0),always_hold(0,-1),always_hold(0,0)]
---- FAILED ---
+Found 1 test.
+Executing test: always_hold(int,int) ..... Run 100 attempts, 70 failures (70.0 %) ..... FAILED
+Smallest failing always_hold(-1,-1)
+Greatest failing always_hold(0,0)
 --- Summary ---
-Executed 1 test in 0.007462978363037109 seconds
-Failed 1 over 1 (1 %)
+Executed 1 test in 0.00545954704284668 seconds
+Failed 1 over 1 (100 %)
 .
 true.
 ```
