@@ -92,9 +92,9 @@ run_test(Test,Result):-
         FS = [Smallest|_],
         reverse(FS,FSRev),
         FSRev = [Greatest|_],
-        format("Smallest failing ~w~nGreatest failing ~w~n--- FAILED ---~n",[Smallest,Greatest]),
+        ansi_format([fg(red)],"--- FAILED ---~nSmallest failing ~w~nGreatest failing ~w~n",[Smallest,Greatest]),
         Result = -1 ;
-        writeln("Passed"),
+        ansi_format([fg(green)],"Passed~n",[]),
         Result = 1
     ).
 
