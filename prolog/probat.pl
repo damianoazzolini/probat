@@ -81,18 +81,18 @@ run_test(Test,Result):-
         format("Some generators for ~w are not valid~n",[Test]),
         false
     ),
-    format("Executing test: ~w~n", Test),
+    format("Executing test: ~w ..... ", Test),
     test_loop(Trials,Predicate,Arguments,[],FailuresList),
     length(FailuresList,NFailures),
-    FailureRatio is NFailures / Trials,
+    FailureRatio is roundtoward((NFailures / Trials)*100, to_nearest),
     sort(FailuresList,FS),
     % return the smallest one
-    format("Run ~w attempts, ~w failures (~w %)~n",[Trials,NFailures,FailureRatio]),
+    format("Run ~w attempts, ~w failures (~w %) ..... ",[Trials,NFailures,FailureRatio]),
     ( NFailures > 0 ->
         FS = [Smallest|_],
         reverse(FS,FSRev),
         FSRev = [Greatest|_],
-        ansi_format([fg(red)],"--- FAILED ---~nSmallest failing ~w~nGreatest failing ~w~n",[Smallest,Greatest]),
+        ansi_format([fg(red)],"FAILED~nSmallest failing ~w~nGreatest failing ~w~n",[Smallest,Greatest]),
         Result = -1 ;
         ansi_format([fg(green)],"Passed~n",[]),
         Result = 1
@@ -176,14 +176,17 @@ property_test_:-
         true
     ),
     length(LTests,NTests),
-    format("Found ~w tests~n",[NTests]),
+    ( ( NTests = 0; NTests = 1 ) ->
+        format("Found ~w test.~n",[NTests]);
+        format("Found ~w tests.~n",[NTests])
+    ),
     % writeln(LTests),
     ( NTests > 0 ->
         call_time(maplist(run_test,LTests,Results), Runtime),
         findall(-1,member(-1,Results),LFailed),
         length(LFailed,NFailed),
         length(Results,NTested),
-        Ratio is NFailed / NTested,
+        Ratio is roundtoward((NFailed / NTested)*100,to_nearest),
         Runtime = time{cpu:_CT, inferences:_I, wall:W},
         writeln("--- Summary ---"),
         format("Executed ~w test in ~w seconds~n",[NTested,W]),
