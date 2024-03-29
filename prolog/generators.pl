@@ -12,11 +12,12 @@ generator(pos_float).
 generator(neg_float).
 generator(number).
 generator(list).
+generator(atom).
 % generator(nonempty_list). % TODO?
 generator(any).
 generator(var). % variable
 
-provided_composite_generators([int(_,_), float(_,_), number(_,_), list(_), list(_,_)]).
+provided_composite_generators([int(_,_), float(_,_), number(_,_), list(_), list(_,_), atom(_,_)]).
 
 % valid_generator(Generator): check whether Generator is a valid generator
 valid_generator(Generator):-
@@ -36,8 +37,11 @@ valid_generator(list(L)):-
     is_list(L),
     maplist(valid_generator,L), !.
 valid_generator(list(N,L)):-
-    (integer(N) ; N = any),
+    ((integer(N), N > 0) ; N = any),
     maplist(valid_generator,L), !.
+valid_generator(atom(L,U)):-
+    integer(L), L >= 1,
+    integer(U), U >= L, !.
 % user defined generator
 valid_generator(G):-
     ground(G),
@@ -151,6 +155,16 @@ random_element(list(LT),L):-
     length(LT,N), !,
     length(L,N),
     maplist(random_element, LT, L).
+
+% atoms
+random_element(atom,AT):-
+    setting(maxLenList, MaxLen),
+    random_element(atom(1,MaxLen),AT).
+random_element(atom(L,U),AT):-
+    random_between(L,U,Len),
+    length(LAtom,Len),
+    maplist(random_between(0x20, 0x7e), LAtom),
+    atom_codes(AT,LAtom).    
 
 % user defined random element
 random_element(G,El):-

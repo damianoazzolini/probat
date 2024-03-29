@@ -42,7 +42,8 @@ Add to your source code a set of facts `property/1` where the argument is the pr
 - [x] `list(any,[type])` -> list of arbitrary length of type type
 - [x] `list(N,[type0,type1,...])`: list of length `N` of only types `type0`, `type1`, ...
 - [x] `list([type0,type1,...])`: list of length of the input list where the first element is of `type0`, the second of `type1`, and so on
-- [ ] atom
+- [X] `atom`
+- [X] `atom(L,U)`: atom of length between `L` and `U`.
 - [ ] nonempty_list?
 - [ ] rational?
 - [ ] blob?

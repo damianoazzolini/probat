@@ -86,9 +86,13 @@ run_test(Test,Result):-
     length(FailuresList,NFailures),
     FailureRatio is NFailures / Trials,
     sort(FailuresList,FS),
+    % return the smallest one
     format("Run ~w attempts, ~w failures (~w %)~n",[Trials,NFailures,FailureRatio]),
     ( NFailures > 0 ->
-        format("Failures list ~w~n--- FAILED ---~n",[FS]),
+        FS = [Smallest|_],
+        reverse(FS,FSRev),
+        FSRev = [Greatest|_],
+        format("Smallest failing ~w~nGreatest failing ~w~n--- FAILED ---~n",[Smallest,Greatest]),
         Result = -1 ;
         writeln("Passed"),
         Result = 1
