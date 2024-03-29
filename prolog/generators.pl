@@ -55,7 +55,7 @@ random_element(var,_).
 
 % any element: number or list
 random_element(any,V):-
-    random_member(T,[number,list]),
+    random_member(T,[number,list,atom]),
     random_element(T,V).
 
 % for integers
@@ -163,8 +163,8 @@ random_element(atom,AT):-
 random_element(atom(L,U),AT):-
     random_between(L,U,Len),
     length(LAtom,Len),
-    maplist(random_between(0x20, 0x7e), LAtom),
-    atom_codes(AT,LAtom).    
+    maplist(random_between(0x20, 0x7e),LAtom),
+    atom_codes(AT,LAtom).
 
 % user defined random element
 random_element(G,El):-

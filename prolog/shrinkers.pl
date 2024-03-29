@@ -152,3 +152,36 @@ shrink(list(Types),List,Shrank):-
     % list of length len(Types) where each element is of type Types_i in Types
     maplist(shrink,Types,List,Shrank).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+first_n_atom(Atom,N,OutAtom):-
+    atom_codes(Atom,LAtom),
+    length(L1,N),
+    append(L1,_,LAtom),
+    L1 \= [],
+    atom_codes(OutAtom,L1).
+shrink(atom,Atom,S):-
+    atom_codes(Atom,LAtom),
+    shrink(list,LAtom,SList),
+    SList \= [],
+    atom_codes(S,SList).
+shrink(atom(L,U),Atom,S):-
+    ( L = U -> 
+        S = Atom ; 
+        setting(depth,MaxAttempts),
+        shrink_atom_bisect(atom(L,U),MaxAttempts,Atom,S)
+    ).
+shrink_atom_bisect(atom(L,U),Depth,Atom,S):-
+    Depth > 0,
+    atom_codes(Atom,LAtom),
+    length(LAtom,N),
+    N >= L, 
+    N =< U,
+    first_n_atom(Atom,L,S).
+shrink_atom_bisect(atom(L,U),Depth,Atom,S):-
+    Depth > 0,
+    L =< U,
+    L1 is floor((L+U)/2),
+    D1 is Depth - 1,
+    shrink_atom_bisect(atom(L1,U),D1,Atom,S).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
