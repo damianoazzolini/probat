@@ -147,7 +147,7 @@ property_test(Arguments):-
 % exist. DoesExist = 1 if the predicate exists, 0 otherwise.
 check_existence(Predicate,DoesExist):-
     functor(Predicate, Name, Arity),
-    ( current_predicate(user:Name/Arity) ->
+    ( ((atom(Predicate) ; compound(Predicate)), current_predicate(user:Name/Arity)) ->
         DoesExist = 1 ;
         DoesExist = 0
     ),
