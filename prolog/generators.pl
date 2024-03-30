@@ -68,20 +68,20 @@ random_element(any,V):-
 % random_element(neg_int,V): V is a random integer between -2**31 and 0 
 % random_element(int(L,U),V): V is a random integer between L and U 
 random_element(int,V):-
-    setting(minVal,MinV),
-    setting(maxVal,MaxV),
+    setting(min_val,MinV),
+    setting(max_val,MaxV),
     random_element(int(MinV,MaxV),V).
 random_element(pos_int,V):-
-    setting(maxVal,MaxV),
+    setting(max_val,MaxV),
     random_element(int(0,MaxV),V).
 random_element(pos_int_no_zero,V):-
-    setting(maxVal,MaxV),
+    setting(max_val,MaxV),
     random_element(int(1,MaxV),V).
 random_element(neg_int,V):-
-    setting(minVal,MinV),
+    setting(min_val,MinV),
     random_element(int(MinV,0),V).
 random_element(neg_int_no_zero,V):-
-    setting(minVal,MinV),
+    setting(min_val,MinV),
     random_element(int(MinV,-1),V).
 random_element(int(Lower,Upper),V):-
     random_between(Lower, Upper, V).
@@ -92,14 +92,14 @@ random_element(int(Lower,Upper),V):-
 % random_element(neg_float,V): V is a random float between -2**31 and 0 
 % random_element(float,L,U,V): V is a random float between L and U 
 random_element(float,V):-
-    setting(minVal,MinV),
-    setting(maxVal,MaxV),
+    setting(min_val,MinV),
+    setting(max_val,MaxV),
     random_element(float(MinV,MaxV),V).
 random_element(pos_float,V):-
-    setting(maxVal,MaxV),
+    setting(max_val,MaxV),
     random_element(float(0,MaxV),V).
 random_element(neg_float,V):-
-    setting(minVal,MinV),
+    setting(min_val,MinV),
     random_element(float(MinV,0),V).
 random_element(float(Lower,Upper),V):-
     random(R),
@@ -135,7 +135,7 @@ pick_random_type(Allowed,V):-
 % random_element(list(LT),L): L is a list of the same length of LT where each element of LT
 %   denotes a type in that specific position
 random_element(list,L):-
-    setting(maxLenList, MaxLen),
+    setting(max_len_list, MaxLen),
     random_between(0, MaxLen, Len), % ok empty list
     length(L, Len),
     maplist(pick_random_type,L).
@@ -147,7 +147,7 @@ random_element(list(N), L):-
 % list of fixed types LT of length N
 random_element(list(N,LT),L):-
     ( N = any -> % any length
-        setting(maxLenList, MaxLen),
+        setting(max_len_list, MaxLen),
         random_between(0, MaxLen, Len) ;
         Len = N
     ),
@@ -162,7 +162,7 @@ random_element(list(LT),L):-
 
 % atoms
 random_element(atom,AT):-
-    setting(maxLenList, MaxLen),
+    setting(max_len_list, MaxLen),
     random_element(atom(1,MaxLen),AT).
 random_element(atom(L,U),AT):-
     random_between(L,U,Len),

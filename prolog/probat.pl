@@ -13,10 +13,10 @@
 
 :- setting(trials, integer, 100, "Number of test").
 :- setting(depth, integer, 8, "Max shrink depth.").
-:- setting(maxLenList, integer, 32, "Max list length.").
+:- setting(max_len_list, integer, 32, "Max list length.").
 :- setting(verbosity, integer, 1, "Verbosity.").
-:- setting(minVal, integer, -2147483648, "Min val to generate."). % -2**31
-:- setting(maxVal, integer, 2147483648, "Max val to generate."). % 2**31
+:- setting(min_val, integer, -2147483648, "Min val to generate."). % -2**31
+:- setting(max_val, integer, 2147483648, "Max val to generate."). % 2**31
 
 % test_shrank(Predicate,LToTest,FailingInstance)
 % LToTest is a list of N lists each one with M elements, where N is
@@ -104,7 +104,7 @@ set_argument(seed(N)):-
     set_random(seed(N)).
 set_argument(Arg):-
     Arg =.. [Argument,Value],
-    member(Argument,[trial,depth,maxLenList,verbosity]), 
+    member(Argument,[trial,depth,max_len_list,verbosity]), 
     ( integer(Value), Value > 0 ->
         set_setting(Argument,Value) ;
         format("~w must be an integer > 0, found ~w~n",[Argument,Value]),
@@ -112,7 +112,7 @@ set_argument(Arg):-
     ).
 set_argument(Arg):-
     Arg =.. [Argument,Value],
-    member(Argument,[minVal,maxVal]), 
+    member(Argument,[min_val,max_val]), 
     ( number(Value) ->
         set_setting(Argument,Value) ;
         format("~w must be a number, found ~w~n",[Argument,Value]),
@@ -131,10 +131,10 @@ property_test:-
 property_test(Arguments):-
     ( is_list(Arguments) -> 
         maplist(set_argument,Arguments), !,
-        setting(minVal,MinV),
-        setting(maxVal,MaxV),
+        setting(min_val,MinV),
+        setting(max_val,MaxV),
         ( MinV >= MaxV -> 
-            writeln("minVal must be less than maxVal"),
+            writeln("min_val must be less than max_val"),
             fail ;
             true
         ),
