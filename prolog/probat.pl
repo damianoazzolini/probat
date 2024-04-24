@@ -104,7 +104,7 @@ set_argument(seed(N)):-
     set_random(seed(N)).
 set_argument(Arg):-
     Arg =.. [Argument,Value],
-    member(Argument,[trial,depth,max_len_list,verbosity]), 
+    member(Argument,[trials,depth,max_len_list,verbosity]), 
     ( integer(Value), Value > 0 ->
         set_setting(Argument,Value) ;
         format("~w must be an integer > 0, found ~w~n",[Argument,Value]),
