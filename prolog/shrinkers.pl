@@ -69,21 +69,24 @@ shrink(Type,Value,ChangedSign):-
 shrink(Type,Value,Shrank):-
     member(Type,[int,float,number]),
     setting(depth,MaxAttempts),
+    setting(minVal,MinV),
+    setting(maxVal,MaxV),
     ( Value > 0 ->
-        LB is -Value, UB = Value ;
-        LB is Value, UB is -Value
+        LB is MinV, UB = Value ;
+        LB is Value, UB is MaxV
     ),
-    LStartingPoints = [left,right],
+    LStartingPoints = [left, right],
     member(StartingPoint,LStartingPoints),
     shrink_bisect_number(Type,MaxAttempts,StartingPoint,LB,UB,Shrank).
-shrink_bisect_number(MaxAttempts,_,LB,UB,Shrank):-
+shrink_bisect_number(Type,MaxAttempts,_,LB,UB,Shrank):-
+    member(Type,[int,float,number]),
     MaxAttempts > 0,
     LB < UB,
     ( LB < 0 ->
         Shrank is UB + LB ;
         Shrank is UB - LB
     ).
-shrink_bisect_number(MaxAttempts,left,LB,UB,Shrank):-
+shrink_bisect_number(Type,MaxAttempts,left,LB,UB,Shrank):-
     member(Type,[int,float,number]),
     MaxAttempts > 0,
     LB < UB,
@@ -93,7 +96,7 @@ shrink_bisect_number(MaxAttempts,left,LB,UB,Shrank):-
     ),
     LB1 \= LB, % to avoid 1
     M1 is MaxAttempts - 1,
-    shrink_bisect_number(M1,right,LB1,UB,Shrank).
+    shrink_bisect_number(Type,M1,right,LB1,UB,Shrank).
 shrink_bisect_number(Type,MaxAttempts,right,LB,UB,Shrank):-
     MaxAttempts > 0,
     LB < UB,
@@ -103,7 +106,7 @@ shrink_bisect_number(Type,MaxAttempts,right,LB,UB,Shrank):-
     ),
     UB1 \= UB, % to avoid 1
     M1 is MaxAttempts - 1,
-    shrink_bisect_number(M1,left,LB,UB1,Shrank).
+    shrink_bisect_number(Type,M1,left,LB,UB1,Shrank).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
